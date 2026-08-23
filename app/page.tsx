@@ -8,12 +8,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const categories = [
-  ['01', 'Kitchens', 'Custom cabinetry & seamless living'],
-  ['02', 'Living Rooms', 'Statement pieces for everyday life'],
-  ['03', 'Bedrooms', 'Quiet spaces, tailored to you'],
-  ['04', 'Wardrobes', 'Storage designed as architecture'],
-  ['05', 'Office', 'Focused spaces with character'],
-  ['06', 'Media Walls', 'A refined centre for the room'],
+  ['01', 'Kitchens', 'Custom cabinetry & seamless living', 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?auto=format&fit=crop&w=1400&q=85'],
+  ['02', 'Living Rooms', 'Statement pieces for everyday life', 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85'],
+  ['03', 'Bedrooms', 'Quiet spaces, tailored to you', 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85'],
+  ['04', 'Wardrobes', 'Storage designed as architecture', 'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1400&q=85'],
+  ['05', 'Office', 'Focused spaces with character', 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1400&q=85'],
+  ['06', 'Media Walls', 'A refined centre for the room', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85'],
 ];
 
 export default function Home() {
@@ -33,6 +33,26 @@ export default function Home() {
         yPercent: 5,
         ease: 'none',
         scrollTrigger: { trigger: hero.current, start: 'top top', end: 'bottom top', scrub: true },
+      });
+
+      gsap.utils.toArray<HTMLElement>('.reveal-section').forEach((section) => {
+        gsap.from(section, {
+          y: 70,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 82%' },
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>('.collection-card').forEach((card) => {
+        gsap.from(card, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 88%' },
+        });
       });
     }, hero);
 
@@ -74,7 +94,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="story" className="grid gap-14 px-6 py-28 md:grid-cols-2 md:px-10 md:py-40 lg:px-14">
+      <section id="story" className="reveal-section grid gap-14 px-6 py-28 md:grid-cols-2 md:px-10 md:py-40 lg:px-14">
         <p className="text-xs tracking-[0.24em] uppercase text-paper/45">01 / The philosophy</p>
         <div>
           <h2 className="max-w-4xl text-4xl font-light leading-[1.05] tracking-[-0.04em] md:text-6xl lg:text-7xl">Good furniture doesn&apos;t fill a room. <span className="text-paper/45">It gives the room its identity.</span></h2>
@@ -82,31 +102,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" className="px-6 pb-28 md:px-10 md:pb-40 lg:px-14">
+      <section id="collections" className="reveal-section px-6 pb-28 md:px-10 md:pb-40 lg:px-14">
         <div className="mb-14 flex items-end justify-between border-b border-paper/15 pb-6">
           <div><p className="mb-3 text-xs tracking-[0.24em] uppercase text-paper/45">02 / Collections</p><h2 className="text-4xl font-light tracking-[-0.04em] md:text-6xl">Made for the way you live.</h2></div>
           <span className="hidden text-xs text-paper/40 md:block">06 categories</span>
         </div>
         <div className="grid gap-px bg-paper/15 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map(([number, title, description]) => (
-            <article key={number} className="group relative min-h-[360px] overflow-hidden bg-ink p-7 transition-colors duration-500 hover:bg-[#22201c] md:min-h-[440px]">
-              <div className="flex justify-between text-xs text-paper/40"><span>{number}</span><ArrowUpRight size={16} /></div>
-              <div className="absolute inset-x-7 bottom-7">
-                <h3 className="text-3xl font-light tracking-[-0.03em] transition-transform duration-500 group-hover:-translate-y-2 md:text-4xl">{title}</h3>
-                <p className="mt-3 max-w-xs text-sm leading-6 text-paper/45 transition-all duration-500 group-hover:text-paper/70">{description}</p>
+          {categories.map(([number, title, description, image]) => (
+            <article key={number} className="collection-card group relative min-h-[390px] overflow-hidden bg-ink md:min-h-[470px]">
+              <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 ease-out group-hover:scale-110 group-hover:opacity-85" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75 transition duration-500 group-hover:from-black/5 group-hover:via-black/10" />
+              <div className="relative flex h-full flex-col justify-between p-7">
+                <div className="flex justify-between text-xs text-white/70"><span>{number}</span><ArrowUpRight size={16} className="transition-transform duration-500 group-hover:rotate-45" /></div>
+                <div>
+                  <h3 className="text-3xl font-light tracking-[-0.03em] transition-transform duration-500 group-hover:-translate-y-1 md:text-4xl">{title}</h3>
+                  <p className="mt-3 max-w-xs text-sm leading-6 text-white/65">{description}</p>
+                </div>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="relative mx-6 min-h-[70vh] overflow-hidden md:mx-10 lg:mx-14">
+      <section className="reveal-section relative mx-6 min-h-[70vh] overflow-hidden md:mx-10 lg:mx-14">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2200&q=90')" }} />
         <div className="absolute inset-0 bg-black/35" />
         <div className="relative flex min-h-[70vh] flex-col justify-between p-7 md:p-12"><p className="text-xs tracking-[0.24em] uppercase text-white/70">03 / Craftsmanship</p><h2 className="max-w-4xl text-5xl font-light leading-[0.95] tracking-[-0.05em] md:text-7xl lg:text-8xl">Details you can<br /><span className="italic">feel.</span></h2></div>
       </section>
 
-      <section id="contact" className="px-6 py-32 md:px-10 md:py-48 lg:px-14">
+      <section id="contact" className="reveal-section px-6 py-32 md:px-10 md:py-48 lg:px-14">
         <p className="mb-8 text-xs tracking-[0.24em] uppercase text-paper/45">04 / Your space</p>
         <h2 className="max-w-5xl text-6xl font-light leading-[0.92] tracking-[-0.06em] md:text-8xl lg:text-[9vw]">Let&apos;s create something <span className="italic">beautiful.</span></h2>
         <a href="https://wa.me/923000000000" className="mt-12 inline-flex items-center gap-4 rounded-full bg-paper px-7 py-5 text-xs font-medium tracking-[0.16em] text-ink uppercase">Start your project <ArrowUpRight size={16} /></a>
