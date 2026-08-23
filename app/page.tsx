@@ -16,6 +16,14 @@ const categories = [
   ['06', 'Media Walls', 'A refined centre for the room', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85'],
 ];
 
+const heroSlides = [
+  { image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=90', label: 'Living Rooms' },
+  { image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2400&q=90', label: 'Bedrooms' },
+  { image: 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?auto=format&fit=crop&w=2400&q=90', label: 'Kitchens' },
+  { image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=2400&q=90', label: 'Wardrobes' },
+  { image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2400&q=90', label: 'Office' },
+];
+
 const closedEntrance = 'https://images.pexels.com/photos/10572349/pexels-photo-10572349.jpeg?auto=compress&cs=tinysrgb&w=2400';
 const openEntrance = 'https://images.pexels.com/photos/36777839/pexels-photo-36777839.jpeg?auto=compress&cs=tinysrgb&w=2400';
 
@@ -23,6 +31,7 @@ export default function Home() {
   const hero = useRef<HTMLDivElement>(null);
   const [doorsOpen, setDoorsOpen] = useState(false);
   const [showDoors, setShowDoors] = useState(true);
+  const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {
     const openTimer = window.setTimeout(() => setDoorsOpen(true), 1100);
@@ -31,6 +40,13 @@ export default function Home() {
       window.clearTimeout(openTimer);
       window.clearTimeout(removeTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setHeroIndex((current) => (current + 1) % heroSlides.length);
+    }, 5500);
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -47,7 +63,6 @@ export default function Home() {
     <main ref={hero} className="bg-ink text-paper">
       {showDoors && (
         <div className="fixed inset-0 z-[200] overflow-hidden bg-black">
-          {/* Real architectural entrance — closed photograph first */}
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-[1700ms] ease-[cubic-bezier(.77,0,.175,1)]"
             style={{
@@ -56,8 +71,6 @@ export default function Home() {
               transform: doorsOpen ? 'scale(1.12)' : 'scale(1)',
             }}
           />
-
-          {/* Real architectural entrance — open photograph revealed underneath */}
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-[2300ms] ease-[cubic-bezier(.16,1,.3,1)]"
             style={{
@@ -66,15 +79,11 @@ export default function Home() {
               transform: doorsOpen ? 'scale(1.06)' : 'scale(1.18)',
             }}
           />
-
-          {/* Cinematic center reveal: makes the real doorway feel like it is opening toward us */}
           <div
             className="absolute inset-0 bg-black/25 transition-[clip-path,opacity] duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
             style={{ clipPath: doorsOpen ? 'inset(0 0 0 0)' : 'inset(0 49.5% 0 49.5%)', opacity: doorsOpen ? 0 : 1 }}
           />
-
           <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55" />
-
           <div className="absolute inset-0 z-10 flex items-center justify-center text-center text-white transition-all duration-1000" style={{ opacity: doorsOpen ? 0 : 1, transform: doorsOpen ? 'scale(1.08)' : 'scale(1)' }}>
             <div className="drop-shadow-[0_3px_14px_rgba(0,0,0,.7)]">
               <p className="text-[9px] tracking-[.55em] text-white/75">WELCOME TO</p>
@@ -82,7 +91,6 @@ export default function Home() {
               <p className="mt-4 text-[9px] tracking-[.32em] text-white/65">CRAFTED FURNITURE · KARACHI</p>
             </div>
           </div>
-
           <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[8px] tracking-[.45em] text-white/60 transition-opacity duration-700" style={{ opacity: doorsOpen ? 0 : 1 }}>
             ENTERING HOME
           </div>
@@ -90,10 +98,31 @@ export default function Home() {
       )}
 
       <section className="hero-section relative flex min-h-screen flex-col overflow-hidden">
-        <div className="hero-image absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90')" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/65" />
+        {heroSlides.map((slide, index) => (
+          <div
+            key={slide.label}
+            className="hero-image absolute inset-0 bg-cover bg-center transition-all duration-[1800ms] ease-out"
+            style={{
+              backgroundImage: `url('${slide.image}')`,
+              opacity: index === heroIndex ? 1 : 0,
+              transform: index === heroIndex ? 'scale(1.04)' : 'scale(1.10)',
+            }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-black/70" />
         <nav className="relative z-10 flex items-center justify-between px-6 py-6 md:px-10 lg:px-14"><div className="text-sm font-medium tracking-[0.24em] uppercase">ELEGENT</div><div className="hidden items-center gap-9 text-[11px] tracking-[0.2em] uppercase md:flex"><a href="#collections">Collections</a><a href="#story">Our Story</a><a href="#contact">Contact</a></div><button aria-label="Open menu" className="rounded-full border border-white/30 p-3 md:hidden"><Menu size={18} /></button></nav>
-        <div className="relative z-10 mt-auto px-6 pb-10 md:px-10 md:pb-14 lg:px-14"><p className="mb-5 text-[10px] tracking-[0.3em] uppercase text-white/75">Karachi · Custom Furniture</p><h1 className="max-w-5xl text-[10vw] font-light leading-[.9] tracking-[-.055em] md:text-[8vw]">Furniture,<br /><span className="italic">crafted for you.</span></h1><div className="mt-7 flex flex-col justify-between gap-7 md:flex-row md:items-end"><p className="max-w-sm text-sm leading-6 text-white/80">Custom furniture made for your home, your style, and your space.</p><a href="#collections" className="w-fit rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[.12em] text-ink uppercase">Explore collections <ArrowDown size={15} className="ml-3 inline" /></a></div></div>
+        <div className="relative z-10 mt-auto px-6 pb-10 md:px-10 md:pb-14 lg:px-14">
+          <div className="mb-5 flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-white/75">
+            <span>Karachi · Custom Furniture</span>
+            <span className="h-px w-8 bg-white/40" />
+            <span className="text-white/55">{heroSlides[heroIndex].label}</span>
+          </div>
+          <h1 className="max-w-5xl text-[10vw] font-light leading-[.9] tracking-[-.055em] md:text-[8vw]">Furniture,<br /><span className="italic">crafted for you.</span></h1>
+          <div className="mt-7 flex flex-col justify-between gap-7 md:flex-row md:items-end"><p className="max-w-sm text-sm leading-6 text-white/80">Custom furniture made for your home, your style, and your space.</p><a href="#collections" className="w-fit rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[.12em] text-ink uppercase">Explore collections <ArrowDown size={15} className="ml-3 inline" /></a></div>
+          <div className="mt-8 flex items-center gap-2">
+            {heroSlides.map((slide, index) => <button key={slide.label} aria-label={`Show ${slide.label}`} onClick={() => setHeroIndex(index)} className={`h-px transition-all duration-500 ${index === heroIndex ? 'w-12 bg-white' : 'w-5 bg-white/35'}`} />)}
+          </div>
+        </div>
       </section>
       <section id="story" className="reveal-section grid gap-14 px-6 py-28 md:grid-cols-2 md:px-10 md:py-40 lg:px-14"><p className="text-xs tracking-[.24em] uppercase text-paper/45">01 / The philosophy</p><div><h2 className="max-w-4xl text-4xl font-light leading-[1.05] tracking-[-.04em] md:text-6xl lg:text-7xl">Good furniture doesn&apos;t fill a room. <span className="text-paper/45">It gives the room its identity.</span></h2><p className="mt-10 max-w-xl text-sm leading-7 text-paper/60 md:text-base">From the first measurement to the final installation, every detail is considered around the way you live. Our approach is custom, tactile and quietly luxurious.</p></div></section>
       <section id="collections" className="reveal-section px-6 pb-28 md:px-10 md:pb-40 lg:px-14"><div className="mb-14 flex items-end justify-between border-b border-paper/15 pb-6"><div><p className="mb-3 text-xs tracking-[.24em] uppercase text-paper/45">02 / Collections</p><h2 className="text-4xl font-light tracking-[-.04em] md:text-6xl">Made for the way you live.</h2></div><span className="hidden text-xs text-paper/40 md:block">06 categories</span></div><div className="grid gap-px bg-paper/15 md:grid-cols-2 lg:grid-cols-3">{categories.map(([number, title, description, image]) => <article key={number} className="collection-card group relative min-h-[390px] overflow-hidden bg-ink md:min-h-[470px]"><img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 group-hover:scale-110 group-hover:opacity-85" /><div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75" /><div className="relative flex h-full flex-col justify-between p-7"><div className="flex justify-between text-xs text-white/70"><span>{number}</span><ArrowUpRight size={16} /></div><div><h3 className="text-3xl font-light md:text-4xl">{title}</h3><p className="mt-3 max-w-xs text-sm leading-6 text-white/65">{description}</p></div></div></article>)}</div></section>
