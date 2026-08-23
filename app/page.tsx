@@ -16,37 +16,90 @@ const categories = [
   ['06', 'Media Walls', 'A refined centre for the room', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85'],
 ];
 
+function DoorLeaf({ side }: { side: 'left' | 'right' }) {
+  const isLeft = side === 'left';
+  return (
+    <div
+      className={`door-leaf absolute top-0 h-full w-1/2 overflow-hidden bg-[#3b2415] ${isLeft ? 'left-0 origin-left' : 'right-0 origin-right'}`}
+      style={{
+        background: 'linear-gradient(90deg, #1c1009 0%, #5a351d 18%, #7b4b29 48%, #3d2415 82%, #180d07 100%)',
+        boxShadow: isLeft ? 'inset -22px 0 40px rgba(0,0,0,.65)' : 'inset 22px 0 40px rgba(0,0,0,.65)',
+      }}
+    >
+      <div className="absolute inset-0 opacity-45" style={{ backgroundImage: 'repeating-linear-gradient(92deg, transparent 0, transparent 17px, rgba(255,210,145,.055) 18px, transparent 20px, transparent 43px)' }} />
+      <div className="absolute inset-[7%_9%] rounded-[3px] border border-[#c8945d]/30 p-[4%] shadow-[inset_0_0_35px_rgba(0,0,0,.4)]">
+        <div className="h-[46%] rounded-[2px] border-[3px] border-[#1c1009]/70 bg-[linear-gradient(145deg,rgba(255,220,160,.09),rgba(0,0,0,.2))] shadow-[inset_0_0_20px_rgba(0,0,0,.45)]" />
+        <div className="mt-[7%] h-[38%] rounded-[2px] border-[3px] border-[#1c1009]/70 bg-[linear-gradient(145deg,rgba(255,220,160,.08),rgba(0,0,0,.22))] shadow-[inset_0_0_20px_rgba(0,0,0,.45)]" />
+      </div>
+      <div className={`absolute top-1/2 z-20 h-16 w-5 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#f1d08b] via-[#8d6128] to-[#f1d08b] shadow-[0_2px_12px_rgba(0,0,0,.7)] ${isLeft ? 'right-[-10px]' : 'left-[-10px]'}`} />
+      <div className={`absolute bottom-8 text-[8px] tracking-[.35em] text-[#e8c48b]/45 ${isLeft ? 'left-8' : 'right-8'}`}>ELEGENT</div>
+    </div>
+  );
+}
+
 export default function Home() {
   const hero = useRef<HTMLDivElement>(null);
   const [doorsOpen, setDoorsOpen] = useState(false);
+  const [showDoors, setShowDoors] = useState(true);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setDoorsOpen(true), 1800);
-    return () => window.clearTimeout(timer);
+    const openTimer = window.setTimeout(() => setDoorsOpen(true), 900);
+    const removeTimer = window.setTimeout(() => setShowDoors(false), 2800);
+    return () => {
+      window.clearTimeout(openTimer);
+      window.clearTimeout(removeTimer);
+    };
   }, []);
 
   useEffect(() => {
-    if (!doorsOpen || !hero.current) return;
+    if (!hero.current) return;
     const ctx = gsap.context(() => {
       gsap.to('.hero-image', { scale: 1.08, yPercent: 5, ease: 'none', scrollTrigger: { trigger: hero.current, start: 'top top', end: 'bottom top', scrub: true } });
       gsap.utils.toArray<HTMLElement>('.reveal-section').forEach((section) => gsap.from(section, { y: 70, opacity: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 82%' } }));
       gsap.utils.toArray<HTMLElement>('.collection-card').forEach((card) => gsap.from(card, { y: 50, opacity: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: card, start: 'top 88%' } }));
     }, hero);
     return () => ctx.revert();
-  }, [doorsOpen]);
+  }, []);
 
   return (
     <main ref={hero} className="bg-ink text-paper">
-      {!doorsOpen && (
-        <div className="fixed inset-0 z-[200] overflow-hidden bg-[#120d08]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,.08),transparent_48%)]" />
-          <div className="absolute inset-y-0 left-1/2 z-20 w-px -translate-x-1/2 bg-white/20" />
-          <div className="absolute inset-y-0 left-0 z-10 w-1/2 bg-[linear-gradient(90deg,#17100a,#4b321f_48%,#24170e)] shadow-[inset_-18px_0_35px_rgba(0,0,0,.55)] transition-transform duration-[1600ms] ease-[cubic-bezier(.76,0,.24,1)]" style={{ transform: doorsOpen ? 'translateX(-100%)' : 'translateX(0)' }} />
-          <div className="absolute inset-y-0 right-0 z-10 w-1/2 bg-[linear-gradient(270deg,#17100a,#4b321f_48%,#24170e)] shadow-[inset_18px_0_35px_rgba(0,0,0,.55)] transition-transform duration-[1600ms] ease-[cubic-bezier(.76,0,.24,1)]" style={{ transform: doorsOpen ? 'translateX(100%)' : 'translateX(0)' }} />
-          <div className="absolute inset-0 z-30 flex items-center justify-center text-center text-white">
-            <div><p className="text-[10px] tracking-[.45em] text-white/55">WELCOME TO</p><h1 className="mt-4 text-4xl font-light tracking-[.18em] md:text-6xl">ELEGENT</h1><p className="mt-5 text-[10px] tracking-[.28em] text-white/45">CRAFTED FURNITURE · KARACHI</p></div>
+      {showDoors && (
+        <div className="fixed inset-0 z-[200] overflow-hidden bg-black" style={{ perspective: '1800px' }}>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(170,105,55,.16),rgba(0,0,0,.88)_72%)]" />
+          <div className="absolute inset-0 flex items-center justify-center" style={{ perspective: '1800px' }}>
+            <div
+              className="relative h-full w-full transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
+              style={{ transformStyle: 'preserve-3d', transform: doorsOpen ? 'translateZ(-70px)' : 'translateZ(0)' }}
+            >
+              <div className="absolute inset-y-0 left-1/2 z-30 w-[2px] -translate-x-1/2 bg-black shadow-[0_0_16px_rgba(0,0,0,.9)]" />
+              <div
+                className="absolute inset-0 transition-opacity duration-700"
+                style={{ opacity: doorsOpen ? 0 : 1 }}
+              >
+                <div className="absolute left-1/2 top-[7%] z-40 -translate-x-1/2 text-center text-white drop-shadow-[0_2px_8px_rgba(0,0,0,.8)]">
+                  <p className="text-[9px] tracking-[.55em] text-white/55">WELCOME TO</p>
+                  <p className="mt-3 text-3xl font-light tracking-[.3em] md:text-5xl">ELEGENT</p>
+                </div>
+              </div>
+              <div className="absolute inset-0 z-20" style={{ transformStyle: 'preserve-3d' }}>
+                <div
+                  className="absolute inset-y-0 left-0 w-1/2 transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
+                  style={{ transform: doorsOpen ? 'rotateY(-102deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d' }}
+                >
+                  <DoorLeaf side="left" />
+                </div>
+                <div
+                  className="absolute inset-y-0 right-0 w-1/2 transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
+                  style={{ transform: doorsOpen ? 'rotateY(102deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d' }}
+                >
+                  <DoorLeaf side="right" />
+                </div>
+              </div>
+              <div className="absolute bottom-8 left-1/2 z-50 -translate-x-1/2 text-[8px] tracking-[.45em] text-white/35 transition-opacity duration-500" style={{ opacity: doorsOpen ? 0 : 1 }}>
+                ENTER
+              </div>
+            </div>
           </div>
-          <div className="absolute bottom-8 left-1/2 z-30 -translate-x-1/2 text-[9px] tracking-[.35em] text-white/35">ENTERING HOME</div>
         </div>
       )}
 
