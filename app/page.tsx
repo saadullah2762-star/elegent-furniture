@@ -24,11 +24,12 @@ export default function Home() {
       const intro = gsap.timeline({ defaults: { ease: 'power4.inOut' } });
 
       intro
-        .to('.intro-logo', { opacity: 1, y: 0, duration: 0.9 })
-        .to('.intro-line', { scaleX: 1, duration: 0.8 }, '-=0.5')
-        .to('.intro-logo', { opacity: 0, y: -18, duration: 0.55 }, '+=0.35')
-        .to('.intro-line', { scaleX: 0, transformOrigin: 'right center', duration: 0.55 }, '-=0.4')
-        .to('.intro-curtain', { clipPath: 'inset(0 0 100% 0)', duration: 1.1 }, '-=0.15')
+        .fromTo('.showroom-image', { scale: 1.14 }, { scale: 1, duration: 1.8 })
+        .fromTo('.showroom-card', { yPercent: 105, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.12 }, '-=1.25')
+        .fromTo('.showroom-label', { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.45')
+        .to('.showroom-card', { yPercent: -115, duration: 1.0, stagger: 0.08 }, '+=0.35')
+        .to('.showroom-content', { opacity: 0, y: -20, duration: 0.45 }, '-=0.9')
+        .to('.intro-curtain', { clipPath: 'inset(0 0 100% 0)', duration: 1.15 }, '-=0.15')
         .from('.nav-item', { y: -18, opacity: 0, stagger: 0.07, duration: 0.8 }, '-=0.45')
         .from('.hero-kicker', { y: 25, opacity: 0, duration: 0.8 }, '-=0.45')
         .from('.hero-title-line', { yPercent: 110, duration: 1.15, stagger: 0.12 }, '-=0.35')
@@ -73,11 +74,40 @@ export default function Home() {
         <div className="hero-image absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90')" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/65" />
 
-        <div className="intro-curtain absolute inset-0 z-50 flex items-center justify-center bg-ink" style={{ clipPath: 'inset(0 0 0 0)' }}>
-          <div className="text-center">
-            <div className="intro-logo translate-y-4 text-xs tracking-[0.55em] text-paper opacity-0 uppercase">ELEGENT</div>
-            <div className="intro-line mx-auto mt-5 h-px w-28 origin-left scale-x-0 bg-paper/50" />
-            <p className="mt-5 text-[9px] tracking-[0.35em] text-paper/45 uppercase">Furniture & Interiors · Karachi</p>
+        <div className="intro-curtain absolute inset-0 z-50 overflow-hidden bg-[#151310]" style={{ clipPath: 'inset(0 0 0 0)' }}>
+          <div className="showroom-image absolute inset-0 bg-cover bg-center opacity-55" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=90')" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/70" />
+
+          <div className="showroom-content relative z-10 flex min-h-screen flex-col justify-between p-6 md:p-10 lg:p-14">
+            <div className="showroom-label flex items-center justify-between text-[9px] tracking-[0.35em] text-white/65 uppercase">
+              <span>ELEGENT</span><span>Furniture & Interiors</span><span>Karachi</span>
+            </div>
+
+            <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-2 md:gap-4">
+              <div className="showroom-card relative h-[42vh] overflow-hidden md:h-[52vh]">
+                <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=90" alt="Luxury furniture interior" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-black/15" />
+                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Living</span>
+              </div>
+              <div className="showroom-card relative mt-10 h-[42vh] overflow-hidden md:h-[52vh]">
+                <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=90" alt="Luxury wardrobe interior" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-black/15" />
+                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Wardrobe</span>
+              </div>
+              <div className="showroom-card relative h-[42vh] overflow-hidden md:h-[52vh]">
+                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=90" alt="Luxury bedroom interior" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-black/15" />
+                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Bedroom</span>
+              </div>
+            </div>
+
+            <div className="showroom-label flex items-end justify-between">
+              <div>
+                <p className="text-[9px] tracking-[0.32em] text-white/55 uppercase">Custom furniture · Designed for your space</p>
+                <h2 className="mt-3 text-3xl font-light tracking-[-0.04em] md:text-5xl">Made around you.</h2>
+              </div>
+              <span className="hidden text-[9px] tracking-[0.3em] text-white/45 uppercase md:block">01 — 03</span>
+            </div>
           </div>
         </div>
 
