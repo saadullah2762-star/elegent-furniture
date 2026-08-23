@@ -1,11 +1,19 @@
 'use client';
 
-import { ArrowDown, ArrowUpRight, Menu } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { ArrowDown, ArrowUpRight, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const tourScenes = [
+  { label: '01 / LIVING ROOM', title: 'The living room.', copy: 'Statement seating, warm timber and a room built around the way you live.', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=90' },
+  { label: '02 / DINING', title: 'Gather around.', copy: 'A dining space designed for long conversations and everyday moments.', image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=2400&q=90' },
+  { label: '03 / BEDROOM', title: 'A quieter place.', copy: 'Soft textures, considered storage and furniture that lets the room breathe.', image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2400&q=90' },
+  { label: '04 / WARDROBE', title: 'Storage, refined.', copy: 'Built around your measurements, your routine and your sense of style.', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2400&q=90' },
+  { label: '05 / MEDIA WALL', title: 'The centre of the room.', copy: 'A refined focal point where materials, lighting and technology come together.', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2400&q=90' },
+];
 
 const categories = [
   ['01', 'Kitchens', 'Custom cabinetry & seamless living', 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?auto=format&fit=crop&w=1400&q=85'],
@@ -18,182 +26,117 @@ const categories = [
 
 export default function Home() {
   const hero = useRef<HTMLDivElement>(null);
+  const [tourIndex, setTourIndex] = useState(0);
+  const [tourDone, setTourDone] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const intro = gsap.timeline({ defaults: { ease: 'power4.inOut' } });
-
-      intro
-        .fromTo('.showroom-image', { scale: 1.14 }, { scale: 1, duration: 1.8 })
-        .fromTo('.showroom-card', { yPercent: 105, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.12 }, '-=1.25')
-        .fromTo('.showroom-label', { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.45')
-        .to('.showroom-card', { yPercent: -115, duration: 1.0, stagger: 0.08 }, '+=0.35')
-        .to('.showroom-content', { opacity: 0, y: -20, duration: 0.45 }, '-=0.9')
-        .to('.intro-curtain', { clipPath: 'inset(0 0 100% 0)', duration: 1.15 }, '-=0.15')
-        .from('.nav-item', { y: -18, opacity: 0, stagger: 0.07, duration: 0.8 }, '-=0.45')
-        .from('.hero-kicker', { y: 25, opacity: 0, duration: 0.8 }, '-=0.45')
-        .from('.hero-title-line', { yPercent: 110, duration: 1.15, stagger: 0.12 }, '-=0.35')
-        .from('.hero-copy', { y: 24, opacity: 0, duration: 0.8 }, '-=0.7')
-        .from('.hero-actions', { y: 18, opacity: 0, duration: 0.7 }, '-=0.55')
-        .from('.scroll-cue', { opacity: 0, y: 12, duration: 0.6 }, '-=0.35');
-
-      gsap.to('.hero-image', {
-        scale: 1.08,
-        yPercent: 5,
-        ease: 'none',
-        scrollTrigger: { trigger: hero.current, start: 'top top', end: 'bottom top', scrub: true },
+    if (tourDone) return;
+    const timer = window.setTimeout(() => {
+      setTourIndex((current) => {
+        if (current >= tourScenes.length - 1) {
+          setTourDone(true);
+          return current;
+        }
+        return current + 1;
       });
+    }, 2200);
+    return () => window.clearTimeout(timer);
+  }, [tourIndex, tourDone]);
 
-      gsap.utils.toArray<HTMLElement>('.reveal-section').forEach((section) => {
-        gsap.from(section, {
-          y: 70,
-          opacity: 0,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 82%' },
-        });
-      });
-
-      gsap.utils.toArray<HTMLElement>('.collection-card').forEach((card) => {
-        gsap.from(card, {
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: card, start: 'top 88%' },
-        });
-      });
-    }, hero);
-
-    return () => ctx.revert();
+  useEffect(() => {
+    if (!hero.current || tourDone) return;
+    const image = hero.current.querySelector('.tour-image');
+    const content = hero.current.querySelector('.tour-content');
+    if (!image || !content) return;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+    tl.fromTo(image, { scale: 1.12, xPercent: 5 }, { scale: 1, xPercent: 0, duration: 1.2 })
+      .fromTo('.tour-top', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, '-=0.8')
+      .fromTo(content, { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4');
+    return () => tl.kill();
   }, []);
+
+  useEffect(() => {
+    if (!hero.current || tourDone) return;
+    const image = hero.current.querySelector('.tour-image');
+    const content = hero.current.querySelector('.tour-content');
+    if (!image || !content || tourIndex === 0) return;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+    tl.to(content, { x: -65, opacity: 0, duration: 0.24 })
+      .to(image, { xPercent: -6, scale: 1.07, duration: 0.3 }, '<')
+      .set(content, { x: 80 })
+      .to(image, { xPercent: 0, scale: 1, duration: 0.58 })
+      .to(content, { x: 0, opacity: 1, duration: 0.42 }, '-=0.34');
+    return () => tl.kill();
+  }, [tourIndex, tourDone]);
+
+  useEffect(() => {
+    if (!hero.current || !tourDone) return;
+    const ctx = gsap.context(() => {
+      gsap.to('.hero-image', { scale: 1.08, yPercent: 5, ease: 'none', scrollTrigger: { trigger: hero.current, start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.utils.toArray<HTMLElement>('.reveal-section').forEach((section) => gsap.from(section, { y: 70, opacity: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 82%' } }));
+      gsap.utils.toArray<HTMLElement>('.collection-card').forEach((card) => gsap.from(card, { y: 50, opacity: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: card, start: 'top 88%' } }));
+    }, hero);
+    return () => ctx.revert();
+  }, [tourDone]);
+
+  const scene = tourScenes[tourIndex];
+  const goNext = () => setTourIndex((i) => Math.min(i + 1, tourScenes.length - 1));
+  const goPrev = () => setTourIndex((i) => Math.max(i - 1, 0));
 
   return (
     <main ref={hero} className="bg-ink text-paper">
+      {!tourDone && (
+        <section className="tour-stage fixed inset-0 z-[100] overflow-hidden bg-black text-white">
+          <img className="tour-image absolute inset-0 h-full w-full object-cover" src={scene.image} alt="Luxury furniture interior tour" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-black/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
+          <div className="tour-top absolute left-0 right-0 top-0 z-10 flex items-center justify-between px-6 py-6 md:px-10 lg:px-14">
+            <span className="text-sm tracking-[0.28em] uppercase">ELEGENT</span>
+            <span className="hidden text-[10px] tracking-[0.25em] text-white/65 uppercase md:block">Private home furniture tour</span>
+            <button onClick={() => setTourDone(true)} className="rounded-full border border-white/35 px-4 py-2 text-[10px] tracking-[0.2em] uppercase transition hover:bg-white hover:text-black">Skip tour</button>
+          </div>
+          <div className="tour-content absolute bottom-20 left-6 z-10 max-w-3xl md:left-10 lg:left-14">
+            <p className="mb-5 text-[10px] tracking-[0.3em] text-white/65 uppercase">{scene.label}</p>
+            <h1 className="tour-title text-5xl font-light leading-[0.92] tracking-[-0.055em] md:text-7xl lg:text-[7vw]">{scene.title}</h1>
+            <p className="tour-copy mt-5 max-w-md text-sm leading-6 text-white/75 md:text-base">{scene.copy}</p>
+            <div className="mt-8 flex items-center gap-3">
+              <button onClick={goPrev} aria-label="Previous room" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 transition hover:bg-white hover:text-black"><ChevronLeft size={17} /></button>
+              <button onClick={goNext} aria-label="Next room" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 transition hover:bg-white hover:text-black"><ChevronRight size={17} /></button>
+              <span className="ml-2 text-[10px] tracking-[0.2em] text-white/55">{String(tourIndex + 1).padStart(2, '0')} / {String(tourScenes.length).padStart(2, '0')}</span>
+            </div>
+          </div>
+          <div className="absolute bottom-7 left-6 right-6 z-10 md:left-10 md:right-10 lg:left-14 lg:right-14">
+            <div className="h-px overflow-hidden bg-white/20"><div className="h-full origin-left bg-white transition-transform duration-500" style={{ transform: `scaleX(${(tourIndex + 1) / tourScenes.length})` }} /></div>
+            <div className="mt-3 flex justify-between text-[9px] tracking-[0.22em] text-white/45 uppercase"><span>Living</span><span>Dining</span><span>Bedroom</span><span>Wardrobe</span><span>Media</span></div>
+          </div>
+        </section>
+      )}
+
       <section className="hero-section relative flex min-h-screen flex-col overflow-hidden">
         <div className="hero-image absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90')" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/65" />
-
-        <div className="intro-curtain absolute inset-0 z-50 overflow-hidden bg-[#151310]" style={{ clipPath: 'inset(0 0 0 0)' }}>
-          <div className="showroom-image absolute inset-0 bg-cover bg-center opacity-55" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=90')" }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/70" />
-
-          <div className="showroom-content relative z-10 flex min-h-screen flex-col justify-between p-6 md:p-10 lg:p-14">
-            <div className="showroom-label flex items-center justify-between text-[9px] tracking-[0.35em] text-white/65 uppercase">
-              <span>ELEGENT</span><span>Furniture & Interiors</span><span>Karachi</span>
-            </div>
-
-            <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-2 md:gap-4">
-              <div className="showroom-card relative h-[42vh] overflow-hidden md:h-[52vh]">
-                <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=90" alt="Luxury furniture interior" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-black/15" />
-                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Living</span>
-              </div>
-              <div className="showroom-card relative mt-10 h-[42vh] overflow-hidden md:h-[52vh]">
-                <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=90" alt="Luxury wardrobe interior" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-black/15" />
-                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Wardrobe</span>
-              </div>
-              <div className="showroom-card relative h-[42vh] overflow-hidden md:h-[52vh]">
-                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=90" alt="Luxury bedroom interior" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-black/15" />
-                <span className="absolute bottom-5 left-5 text-[9px] tracking-[0.25em] text-white uppercase">Bedroom</span>
-              </div>
-            </div>
-
-            <div className="showroom-label flex items-end justify-between">
-              <div>
-                <p className="text-[9px] tracking-[0.32em] text-white/55 uppercase">Custom furniture · Designed for your space</p>
-                <h2 className="mt-3 text-3xl font-light tracking-[-0.04em] md:text-5xl">Made around you.</h2>
-              </div>
-              <span className="hidden text-[9px] tracking-[0.3em] text-white/45 uppercase md:block">01 — 03</span>
-            </div>
-          </div>
-        </div>
-
         <nav className="relative z-10 flex items-center justify-between px-6 py-6 md:px-10 lg:px-14">
-          <div className="nav-item text-sm font-medium tracking-[0.24em] uppercase">ELEGENT</div>
-          <div className="hidden items-center gap-9 text-[11px] tracking-[0.2em] uppercase md:flex">
-            <a className="nav-item transition-opacity hover:opacity-60" href="#collections">Collections</a>
-            <a className="nav-item transition-opacity hover:opacity-60" href="#story">Our Story</a>
-            <a className="nav-item transition-opacity hover:opacity-60" href="#contact">Contact</a>
-          </div>
-          <button aria-label="Open menu" className="nav-item rounded-full border border-white/30 p-3 md:hidden"><Menu size={18} /></button>
-          <a href="#contact" className="nav-item hidden rounded-full border border-white/40 px-5 py-3 text-[10px] tracking-[0.2em] uppercase transition-all hover:bg-white hover:text-ink md:block">Start a project</a>
+          <div className="text-sm font-medium tracking-[0.24em] uppercase">ELEGENT</div>
+          <div className="hidden items-center gap-9 text-[11px] tracking-[0.2em] uppercase md:flex"><a href="#collections">Collections</a><a href="#story">Our Story</a><a href="#contact">Contact</a></div>
+          <button aria-label="Open menu" className="rounded-full border border-white/30 p-3 md:hidden"><Menu size={18} /></button>
+          <a href="#contact" className="hidden rounded-full border border-white/40 px-5 py-3 text-[10px] tracking-[0.2em] uppercase transition hover:bg-white hover:text-ink md:block">Start a project</a>
         </nav>
-
         <div className="relative z-10 mt-auto px-6 pb-10 md:px-10 md:pb-14 lg:px-14">
-          <p className="hero-kicker mb-5 text-[10px] tracking-[0.3em] uppercase text-white/75">Karachi · Custom Furniture</p>
-          <div className="max-w-5xl overflow-hidden">
-            <h1 className="text-[10vw] font-light leading-[0.9] tracking-[-0.055em] md:text-[8vw] lg:text-[7.2vw]">
-              <span className="hero-title-line block">Furniture,</span>
-              <span className="hero-title-line block italic">crafted for you.</span>
-            </h1>
-          </div>
-          <div className="mt-7 flex flex-col justify-between gap-7 md:flex-row md:items-end">
-            <p className="hero-copy max-w-sm text-sm leading-6 text-white/80 md:text-base">Custom furniture made for your home, your style, and your space.</p>
-            <div className="hero-actions flex items-center gap-3">
-              <a href="#collections" className="group flex items-center gap-4 rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[0.12em] text-ink uppercase">Explore collections <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
-              <a href="#story" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 transition-colors hover:bg-white hover:text-ink"><ArrowUpRight size={17} /></a>
-            </div>
-          </div>
-        </div>
-
-        <div className="scroll-cue absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-3 text-[9px] tracking-[0.3em] text-white/60 uppercase md:flex">
-          <span className="h-px w-10 bg-white/35" /> Scroll to explore <span className="h-px w-10 bg-white/35" />
+          <p className="mb-5 text-[10px] tracking-[0.3em] uppercase text-white/75">Karachi · Custom Furniture</p>
+          <div className="max-w-5xl overflow-hidden"><h2 className="text-[10vw] font-light leading-[0.9] tracking-[-0.055em] md:text-[8vw] lg:text-[7.2vw]">Furniture,<br /><span className="italic">crafted for you.</span></h2></div>
+          <div className="mt-7 flex flex-col justify-between gap-7 md:flex-row md:items-end"><p className="max-w-sm text-sm leading-6 text-white/80 md:text-base">Custom furniture made for your home, your style, and your space.</p><div className="flex items-center gap-3"><a href="#collections" className="group flex items-center gap-4 rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[0.12em] text-ink uppercase">Explore collections <ArrowDown size={15} /></a><a href="#story" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40"><ArrowUpRight size={17} /></a></div></div>
         </div>
       </section>
 
-      <section id="story" className="reveal-section grid gap-14 px-6 py-28 md:grid-cols-2 md:px-10 md:py-40 lg:px-14">
-        <p className="text-xs tracking-[0.24em] uppercase text-paper/45">01 / The philosophy</p>
-        <div>
-          <h2 className="max-w-4xl text-4xl font-light leading-[1.05] tracking-[-0.04em] md:text-6xl lg:text-7xl">Good furniture doesn&apos;t fill a room. <span className="text-paper/45">It gives the room its identity.</span></h2>
-          <p className="mt-10 max-w-xl text-sm leading-7 text-paper/60 md:text-base">From the first measurement to the final installation, every detail is considered around the way you live. Our approach is custom, tactile and quietly luxurious.</p>
-        </div>
-      </section>
+      <section id="story" className="reveal-section grid gap-14 px-6 py-28 md:grid-cols-2 md:px-10 md:py-40 lg:px-14"><p className="text-xs tracking-[0.24em] uppercase text-paper/45">01 / The philosophy</p><div><h2 className="max-w-4xl text-4xl font-light leading-[1.05] tracking-[-0.04em] md:text-6xl lg:text-7xl">Good furniture doesn&apos;t fill a room. <span className="text-paper/45">It gives the room its identity.</span></h2><p className="mt-10 max-w-xl text-sm leading-7 text-paper/60 md:text-base">From the first measurement to the final installation, every detail is considered around the way you live. Our approach is custom, tactile and quietly luxurious.</p></div></section>
 
-      <section id="collections" className="reveal-section px-6 pb-28 md:px-10 md:pb-40 lg:px-14">
-        <div className="mb-14 flex items-end justify-between border-b border-paper/15 pb-6">
-          <div><p className="mb-3 text-xs tracking-[0.24em] uppercase text-paper/45">02 / Collections</p><h2 className="text-4xl font-light tracking-[-0.04em] md:text-6xl">Made for the way you live.</h2></div>
-          <span className="hidden text-xs text-paper/40 md:block">06 categories</span>
-        </div>
-        <div className="grid gap-px bg-paper/15 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map(([number, title, description, image]) => (
-            <article key={number} className="collection-card group relative min-h-[390px] overflow-hidden bg-ink md:min-h-[470px]">
-              <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 ease-out group-hover:scale-110 group-hover:opacity-85" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75 transition duration-500 group-hover:from-black/5 group-hover:via-black/10" />
-              <div className="relative flex h-full flex-col justify-between p-7">
-                <div className="flex justify-between text-xs text-white/70"><span>{number}</span><ArrowUpRight size={16} className="transition-transform duration-500 group-hover:rotate-45" /></div>
-                <div>
-                  <h3 className="text-3xl font-light tracking-[-0.03em] transition-transform duration-500 group-hover:-translate-y-1 md:text-4xl">{title}</h3>
-                  <p className="mt-3 max-w-xs text-sm leading-6 text-white/65">{description}</p>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <section id="collections" className="reveal-section px-6 pb-28 md:px-10 md:pb-40 lg:px-14"><div className="mb-14 flex items-end justify-between border-b border-paper/15 pb-6"><div><p className="mb-3 text-xs tracking-[0.24em] uppercase text-paper/45">02 / Collections</p><h2 className="text-4xl font-light tracking-[-0.04em] md:text-6xl">Made for the way you live.</h2></div><span className="hidden text-xs text-paper/40 md:block">06 categories</span></div><div className="grid gap-px bg-paper/15 md:grid-cols-2 lg:grid-cols-3">{categories.map(([number, title, description, image]) => (<article key={number} className="collection-card group relative min-h-[390px] overflow-hidden bg-ink md:min-h-[470px]"><img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 ease-out group-hover:scale-110 group-hover:opacity-85" /><div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75" /><div className="relative flex h-full flex-col justify-between p-7"><div className="flex justify-between text-xs text-white/70"><span>{number}</span><ArrowUpRight size={16} /></div><div><h3 className="text-3xl font-light tracking-[-0.03em] md:text-4xl">{title}</h3><p className="mt-3 max-w-xs text-sm leading-6 text-white/65">{description}</p></div></div></article>))}</div></section>
 
-      <section className="reveal-section relative mx-6 min-h-[70vh] overflow-hidden md:mx-10 lg:mx-14">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2200&q=90')" }} />
-        <div className="absolute inset-0 bg-black/35" />
-        <div className="relative flex min-h-[70vh] flex-col justify-between p-7 md:p-12"><p className="text-xs tracking-[0.24em] uppercase text-white/70">03 / Craftsmanship</p><h2 className="max-w-4xl text-5xl font-light leading-[0.95] tracking-[-0.05em] md:text-7xl lg:text-8xl">Details you can<br /><span className="italic">feel.</span></h2></div>
-      </section>
+      <section className="reveal-section relative mx-6 min-h-[70vh] overflow-hidden md:mx-10 lg:mx-14"><div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2200&q=90')" }} /><div className="absolute inset-0 bg-black/35" /><div className="relative flex min-h-[70vh] flex-col justify-between p-7 md:p-12"><p className="text-xs tracking-[0.24em] uppercase text-white/70">03 / Craftsmanship</p><h2 className="max-w-4xl text-5xl font-light leading-[0.95] tracking-[-0.05em] md:text-7xl lg:text-8xl">Details you can<br /><span className="italic">feel.</span></h2></div></section>
 
-      <section id="contact" className="reveal-section grid gap-16 px-6 py-28 md:grid-cols-[1.35fr_0.65fr] md:px-10 md:py-40 lg:px-14 lg:py-44">
-        <div>
-          <p className="mb-8 text-xs tracking-[0.24em] uppercase text-paper/45">04 / Your space</p>
-          <h2 className="max-w-5xl text-6xl font-light leading-[0.92] tracking-[-0.06em] md:text-8xl lg:text-[8vw]">Let&apos;s create something <span className="italic">beautiful.</span></h2>
-          <a href="https://wa.me/923000000000" className="mt-12 inline-flex items-center gap-4 rounded-full bg-paper px-7 py-5 text-xs font-medium tracking-[0.16em] text-ink uppercase">Start your project <ArrowUpRight size={16} /></a>
-        </div>
-        <div className="flex flex-col justify-end border-l border-paper/15 pl-7 text-sm leading-7 text-paper/55 md:pl-10">
-          <p className="mb-5 text-xs tracking-[0.24em] text-paper/35 uppercase">Custom furniture · Karachi</p>
-          <p>Tell us what you are imagining. We measure, design, build and install furniture around your space.</p>
-          <a href="https://wa.me/923000000000" className="mt-8 w-fit border-b border-paper/35 pb-1 text-xs tracking-[0.16em] text-paper uppercase transition-opacity hover:opacity-60">WhatsApp us ↗</a>
-        </div>
-      </section>
+      <section id="contact" className="reveal-section px-6 py-28 md:px-10 md:py-40 lg:px-14 lg:py-44"><p className="mb-8 text-xs tracking-[0.24em] uppercase text-paper/45">04 / Your space</p><h2 className="max-w-5xl text-6xl font-light leading-[0.92] tracking-[-0.06em] md:text-8xl lg:text-[8vw]">Let&apos;s create something <span className="italic">beautiful.</span></h2><a href="#" className="mt-12 inline-flex rounded-full bg-paper px-7 py-4 text-xs font-medium tracking-[0.15em] text-ink uppercase">Start your project <ArrowUpRight size={15} className="ml-3" /></a></section>
 
-      <footer className="flex flex-col justify-between gap-10 border-t border-paper/15 px-6 py-8 text-xs text-paper/45 md:flex-row md:px-10 lg:px-14"><span>ELEGENT — Furniture & Interiors</span><span>Karachi, Pakistan</span><span>© 2026 Elegent</span></footer>
+      <footer className="flex flex-col gap-4 border-t border-paper/10 px-6 py-8 text-[10px] text-paper/45 md:flex-row md:items-center md:justify-between md:px-10 lg:px-14"><span>ELEGENT — Furniture & Interiors</span><span>Karachi, Pakistan</span><span>© 2026 Elegent</span></footer>
     </main>
   );
 }
