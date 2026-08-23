@@ -57,17 +57,17 @@ export default function Home() {
         </nav>
 
         <div className="relative z-10 mt-auto px-6 pb-10 md:px-10 md:pb-14 lg:px-14">
-          <p className="hero-kicker mb-6 text-[10px] tracking-[0.32em] uppercase text-white/75">Karachi · Custom Furniture & Interiors</p>
-          <div className="overflow-hidden">
-            <h1 className="text-[15vw] font-light leading-[0.82] tracking-[-0.06em] md:text-[12vw] lg:text-[10.5vw]">
+          <p className="hero-kicker mb-5 text-[10px] tracking-[0.3em] uppercase text-white/75">Karachi · Custom Furniture</p>
+          <div className="max-w-5xl overflow-hidden">
+            <h1 className="text-[10vw] font-light leading-[0.9] tracking-[-0.055em] md:text-[8vw] lg:text-[7.2vw]">
               <span className="hero-title-line block">Furniture,</span>
-              <span className="hero-title-line block pl-[8vw] italic">crafted around you.</span>
+              <span className="hero-title-line block italic">crafted for you.</span>
             </h1>
           </div>
-          <div className="mt-9 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <p className="hero-copy max-w-md text-sm leading-6 text-white/75 md:text-base">Bespoke furniture and interior pieces made with precision, proportion and a deep respect for the spaces they inhabit.</p>
+          <div className="mt-7 flex flex-col justify-between gap-7 md:flex-row md:items-end">
+            <p className="hero-copy max-w-sm text-sm leading-6 text-white/80 md:text-base">Custom furniture made for your home, your style, and your space.</p>
             <div className="hero-actions flex items-center gap-3">
-              <a href="#collections" className="group flex items-center gap-4 rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[0.12em] text-ink uppercase">Explore collection <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
+              <a href="#collections" className="group flex items-center gap-4 rounded-full bg-paper px-6 py-4 text-xs font-medium tracking-[0.12em] text-ink uppercase">Explore collections <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
               <a href="#story" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 transition-colors hover:bg-white hover:text-ink"><ArrowUpRight size={17} /></a>
             </div>
           </div>
