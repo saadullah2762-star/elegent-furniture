@@ -16,26 +16,8 @@ const categories = [
   ['06', 'Media Walls', 'A refined centre for the room', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85'],
 ];
 
-function DoorLeaf({ side }: { side: 'left' | 'right' }) {
-  const isLeft = side === 'left';
-  return (
-    <div
-      className={`door-leaf absolute top-0 h-full w-1/2 overflow-hidden bg-[#3b2415] ${isLeft ? 'left-0 origin-left' : 'right-0 origin-right'}`}
-      style={{
-        background: 'linear-gradient(90deg, #1c1009 0%, #5a351d 18%, #7b4b29 48%, #3d2415 82%, #180d07 100%)',
-        boxShadow: isLeft ? 'inset -22px 0 40px rgba(0,0,0,.65)' : 'inset 22px 0 40px rgba(0,0,0,.65)',
-      }}
-    >
-      <div className="absolute inset-0 opacity-45" style={{ backgroundImage: 'repeating-linear-gradient(92deg, transparent 0, transparent 17px, rgba(255,210,145,.055) 18px, transparent 20px, transparent 43px)' }} />
-      <div className="absolute inset-[7%_9%] rounded-[3px] border border-[#c8945d]/30 p-[4%] shadow-[inset_0_0_35px_rgba(0,0,0,.4)]">
-        <div className="h-[46%] rounded-[2px] border-[3px] border-[#1c1009]/70 bg-[linear-gradient(145deg,rgba(255,220,160,.09),rgba(0,0,0,.2))] shadow-[inset_0_0_20px_rgba(0,0,0,.45)]" />
-        <div className="mt-[7%] h-[38%] rounded-[2px] border-[3px] border-[#1c1009]/70 bg-[linear-gradient(145deg,rgba(255,220,160,.08),rgba(0,0,0,.22))] shadow-[inset_0_0_20px_rgba(0,0,0,.45)]" />
-      </div>
-      <div className={`absolute top-1/2 z-20 h-16 w-5 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#f1d08b] via-[#8d6128] to-[#f1d08b] shadow-[0_2px_12px_rgba(0,0,0,.7)] ${isLeft ? 'right-[-10px]' : 'left-[-10px]'}`} />
-      <div className={`absolute bottom-8 text-[8px] tracking-[.35em] text-[#e8c48b]/45 ${isLeft ? 'left-8' : 'right-8'}`}>ELEGENT</div>
-    </div>
-  );
-}
+const closedEntrance = 'https://images.pexels.com/photos/10572349/pexels-photo-10572349.jpeg?auto=compress&cs=tinysrgb&w=2400';
+const openEntrance = 'https://images.pexels.com/photos/36777839/pexels-photo-36777839.jpeg?auto=compress&cs=tinysrgb&w=2400';
 
 export default function Home() {
   const hero = useRef<HTMLDivElement>(null);
@@ -43,8 +25,8 @@ export default function Home() {
   const [showDoors, setShowDoors] = useState(true);
 
   useEffect(() => {
-    const openTimer = window.setTimeout(() => setDoorsOpen(true), 900);
-    const removeTimer = window.setTimeout(() => setShowDoors(false), 2800);
+    const openTimer = window.setTimeout(() => setDoorsOpen(true), 1100);
+    const removeTimer = window.setTimeout(() => setShowDoors(false), 3600);
     return () => {
       window.clearTimeout(openTimer);
       window.clearTimeout(removeTimer);
@@ -64,41 +46,45 @@ export default function Home() {
   return (
     <main ref={hero} className="bg-ink text-paper">
       {showDoors && (
-        <div className="fixed inset-0 z-[200] overflow-hidden bg-black" style={{ perspective: '1800px' }}>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(170,105,55,.16),rgba(0,0,0,.88)_72%)]" />
-          <div className="absolute inset-0 flex items-center justify-center" style={{ perspective: '1800px' }}>
-            <div
-              className="relative h-full w-full transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
-              style={{ transformStyle: 'preserve-3d', transform: doorsOpen ? 'translateZ(-70px)' : 'translateZ(0)' }}
-            >
-              <div className="absolute inset-y-0 left-1/2 z-30 w-[2px] -translate-x-1/2 bg-black shadow-[0_0_16px_rgba(0,0,0,.9)]" />
-              <div
-                className="absolute inset-0 transition-opacity duration-700"
-                style={{ opacity: doorsOpen ? 0 : 1 }}
-              >
-                <div className="absolute left-1/2 top-[7%] z-40 -translate-x-1/2 text-center text-white drop-shadow-[0_2px_8px_rgba(0,0,0,.8)]">
-                  <p className="text-[9px] tracking-[.55em] text-white/55">WELCOME TO</p>
-                  <p className="mt-3 text-3xl font-light tracking-[.3em] md:text-5xl">ELEGENT</p>
-                </div>
-              </div>
-              <div className="absolute inset-0 z-20" style={{ transformStyle: 'preserve-3d' }}>
-                <div
-                  className="absolute inset-y-0 left-0 w-1/2 transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
-                  style={{ transform: doorsOpen ? 'rotateY(-102deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d' }}
-                >
-                  <DoorLeaf side="left" />
-                </div>
-                <div
-                  className="absolute inset-y-0 right-0 w-1/2 transition-transform duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
-                  style={{ transform: doorsOpen ? 'rotateY(102deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d' }}
-                >
-                  <DoorLeaf side="right" />
-                </div>
-              </div>
-              <div className="absolute bottom-8 left-1/2 z-50 -translate-x-1/2 text-[8px] tracking-[.45em] text-white/35 transition-opacity duration-500" style={{ opacity: doorsOpen ? 0 : 1 }}>
-                ENTER
-              </div>
+        <div className="fixed inset-0 z-[200] overflow-hidden bg-black">
+          {/* Real architectural entrance — closed photograph first */}
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-all duration-[1700ms] ease-[cubic-bezier(.77,0,.175,1)]"
+            style={{
+              backgroundImage: `url('${closedEntrance}')`,
+              opacity: doorsOpen ? 0 : 1,
+              transform: doorsOpen ? 'scale(1.12)' : 'scale(1)',
+            }}
+          />
+
+          {/* Real architectural entrance — open photograph revealed underneath */}
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-all duration-[2300ms] ease-[cubic-bezier(.16,1,.3,1)]"
+            style={{
+              backgroundImage: `url('${openEntrance}')`,
+              opacity: doorsOpen ? 1 : 0,
+              transform: doorsOpen ? 'scale(1.06)' : 'scale(1.18)',
+            }}
+          />
+
+          {/* Cinematic center reveal: makes the real doorway feel like it is opening toward us */}
+          <div
+            className="absolute inset-0 bg-black/25 transition-[clip-path,opacity] duration-[1900ms] ease-[cubic-bezier(.77,0,.175,1)]"
+            style={{ clipPath: doorsOpen ? 'inset(0 0 0 0)' : 'inset(0 49.5% 0 49.5%)', opacity: doorsOpen ? 0 : 1 }}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55" />
+
+          <div className="absolute inset-0 z-10 flex items-center justify-center text-center text-white transition-all duration-1000" style={{ opacity: doorsOpen ? 0 : 1, transform: doorsOpen ? 'scale(1.08)' : 'scale(1)' }}>
+            <div className="drop-shadow-[0_3px_14px_rgba(0,0,0,.7)]">
+              <p className="text-[9px] tracking-[.55em] text-white/75">WELCOME TO</p>
+              <h1 className="mt-3 text-4xl font-light tracking-[.28em] md:text-6xl">ELEGENT</h1>
+              <p className="mt-4 text-[9px] tracking-[.32em] text-white/65">CRAFTED FURNITURE · KARACHI</p>
             </div>
+          </div>
+
+          <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[8px] tracking-[.45em] text-white/60 transition-opacity duration-700" style={{ opacity: doorsOpen ? 0 : 1 }}>
+            ENTERING HOME
           </div>
         </div>
       )}
