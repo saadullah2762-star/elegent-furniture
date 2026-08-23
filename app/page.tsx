@@ -3,6 +3,9 @@
 import { ArrowDown, ArrowUpRight, Menu } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const categories = [
   ['01', 'Kitchens', 'Custom cabinetry & seamless living'],
