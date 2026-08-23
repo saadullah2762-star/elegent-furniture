@@ -21,12 +21,20 @@ export default function Home() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from('.nav-item', { y: -18, opacity: 0, stagger: 0.07, duration: 0.8 })
+      const intro = gsap.timeline({ defaults: { ease: 'power4.inOut' } });
+
+      intro
+        .to('.intro-logo', { opacity: 1, y: 0, duration: 0.9 })
+        .to('.intro-line', { scaleX: 1, duration: 0.8 }, '-=0.5')
+        .to('.intro-logo', { opacity: 0, y: -18, duration: 0.55 }, '+=0.35')
+        .to('.intro-line', { scaleX: 0, transformOrigin: 'right center', duration: 0.55 }, '-=0.4')
+        .to('.intro-curtain', { clipPath: 'inset(0 0 100% 0)', duration: 1.1 }, '-=0.15')
+        .from('.nav-item', { y: -18, opacity: 0, stagger: 0.07, duration: 0.8 }, '-=0.45')
         .from('.hero-kicker', { y: 25, opacity: 0, duration: 0.8 }, '-=0.45')
         .from('.hero-title-line', { yPercent: 110, duration: 1.15, stagger: 0.12 }, '-=0.35')
         .from('.hero-copy', { y: 24, opacity: 0, duration: 0.8 }, '-=0.7')
-        .from('.hero-actions', { y: 18, opacity: 0, duration: 0.7 }, '-=0.55');
+        .from('.hero-actions', { y: 18, opacity: 0, duration: 0.7 }, '-=0.55')
+        .from('.scroll-cue', { opacity: 0, y: 12, duration: 0.6 }, '-=0.35');
 
       gsap.to('.hero-image', {
         scale: 1.08,
@@ -65,6 +73,14 @@ export default function Home() {
         <div className="hero-image absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90')" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/65" />
 
+        <div className="intro-curtain absolute inset-0 z-50 flex items-center justify-center bg-ink" style={{ clipPath: 'inset(0 0 0 0)' }}>
+          <div className="text-center">
+            <div className="intro-logo translate-y-4 text-xs tracking-[0.55em] text-paper opacity-0 uppercase">ELEGENT</div>
+            <div className="intro-line mx-auto mt-5 h-px w-28 origin-left scale-x-0 bg-paper/50" />
+            <p className="mt-5 text-[9px] tracking-[0.35em] text-paper/45 uppercase">Furniture & Interiors · Karachi</p>
+          </div>
+        </div>
+
         <nav className="relative z-10 flex items-center justify-between px-6 py-6 md:px-10 lg:px-14">
           <div className="nav-item text-sm font-medium tracking-[0.24em] uppercase">ELEGENT</div>
           <div className="hidden items-center gap-9 text-[11px] tracking-[0.2em] uppercase md:flex">
@@ -91,6 +107,10 @@ export default function Home() {
               <a href="#story" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 transition-colors hover:bg-white hover:text-ink"><ArrowUpRight size={17} /></a>
             </div>
           </div>
+        </div>
+
+        <div className="scroll-cue absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-3 text-[9px] tracking-[0.3em] text-white/60 uppercase md:flex">
+          <span className="h-px w-10 bg-white/35" /> Scroll to explore <span className="h-px w-10 bg-white/35" />
         </div>
       </section>
 
@@ -130,10 +150,17 @@ export default function Home() {
         <div className="relative flex min-h-[70vh] flex-col justify-between p-7 md:p-12"><p className="text-xs tracking-[0.24em] uppercase text-white/70">03 / Craftsmanship</p><h2 className="max-w-4xl text-5xl font-light leading-[0.95] tracking-[-0.05em] md:text-7xl lg:text-8xl">Details you can<br /><span className="italic">feel.</span></h2></div>
       </section>
 
-      <section id="contact" className="reveal-section px-6 py-32 md:px-10 md:py-48 lg:px-14">
-        <p className="mb-8 text-xs tracking-[0.24em] uppercase text-paper/45">04 / Your space</p>
-        <h2 className="max-w-5xl text-6xl font-light leading-[0.92] tracking-[-0.06em] md:text-8xl lg:text-[9vw]">Let&apos;s create something <span className="italic">beautiful.</span></h2>
-        <a href="https://wa.me/923000000000" className="mt-12 inline-flex items-center gap-4 rounded-full bg-paper px-7 py-5 text-xs font-medium tracking-[0.16em] text-ink uppercase">Start your project <ArrowUpRight size={16} /></a>
+      <section id="contact" className="reveal-section grid gap-16 px-6 py-28 md:grid-cols-[1.35fr_0.65fr] md:px-10 md:py-40 lg:px-14 lg:py-44">
+        <div>
+          <p className="mb-8 text-xs tracking-[0.24em] uppercase text-paper/45">04 / Your space</p>
+          <h2 className="max-w-5xl text-6xl font-light leading-[0.92] tracking-[-0.06em] md:text-8xl lg:text-[8vw]">Let&apos;s create something <span className="italic">beautiful.</span></h2>
+          <a href="https://wa.me/923000000000" className="mt-12 inline-flex items-center gap-4 rounded-full bg-paper px-7 py-5 text-xs font-medium tracking-[0.16em] text-ink uppercase">Start your project <ArrowUpRight size={16} /></a>
+        </div>
+        <div className="flex flex-col justify-end border-l border-paper/15 pl-7 text-sm leading-7 text-paper/55 md:pl-10">
+          <p className="mb-5 text-xs tracking-[0.24em] text-paper/35 uppercase">Custom furniture · Karachi</p>
+          <p>Tell us what you are imagining. We measure, design, build and install furniture around your space.</p>
+          <a href="https://wa.me/923000000000" className="mt-8 w-fit border-b border-paper/35 pb-1 text-xs tracking-[0.16em] text-paper uppercase transition-opacity hover:opacity-60">WhatsApp us ↗</a>
+        </div>
       </section>
 
       <footer className="flex flex-col justify-between gap-10 border-t border-paper/15 px-6 py-8 text-xs text-paper/45 md:flex-row md:px-10 lg:px-14"><span>ELEGENT — Furniture & Interiors</span><span>Karachi, Pakistan</span><span>© 2026 Elegent</span></footer>
