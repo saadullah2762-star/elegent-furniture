@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 type Collection = {
   title: string;
@@ -40,15 +40,15 @@ const DATA: Record<string, Collection> = {
   },
 };
 
-export function generateStaticParams() {
-  return Object.keys(DATA).map((slug) => ({ slug }));
-}
+// Do not pre-render the 100-image galleries during the Vercel build.
+// The gallery uses external image URLs and is intentionally rendered at request time.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function CollectionDetail({ params }: { params: { slug: string } }) {
-  const item = DATA[params.slug] ?? DATA.kitchens;
+export default async function CollectionDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const item = DATA[slug] ?? DATA.kitchens;
 
-  // Each card gets its own lock value. This removes the old 8-image repeat system.
-  // The tag is category-specific, so a Kitchens page requests kitchen photos only, etc.
   const photos = Array.from({ length: 100 }, (_, index) =>
     `https://loremflickr.com/1800/1350/${item.tag}?lock=${index + 1}`
   );
@@ -94,8 +94,7 @@ export default function CollectionDetail({ params }: { params: { slug: string } 
               loading={index < 9 ? 'eager' : 'lazy'}
               className="h-full w-full object-cover transition duration-1000 ease-out group-hover:scale-105"
               onError={(event) => {
-                const image = event.currentTarget;
-                image.style.display = 'none';
+                event.currentTarget.style.display = 'none';
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80" />
