@@ -4,95 +4,39 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 type Collection = {
   title: string;
   intro: string;
-  images: string[];
+  tag: string;
 };
-
-const u = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1800&q=88`;
 
 const DATA: Record<string, Collection> = {
   kitchens: {
     title: 'Kitchens',
     intro: 'Custom cabinetry, islands, storage and complete kitchen interiors designed around your home.',
-    images: [
-      u('photo-1507089947368-19c1da9775ae'),
-      u('photo-1556909114-f6e7ad7d3136'),
-      u('photo-1556912173-46c336c7fd55'),
-      u('photo-1600566753190-17f0baa2a6c3'),
-      u('photo-1600210492486-724fe5c67fb0'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1600585154340-be6161a56a0c'),
-      u('photo-1616486338812-3dadae4b4ace'),
-    ],
+    tag: 'kitchen',
   },
   'living-rooms': {
     title: 'Living Rooms',
     intro: 'Sofas, tables, media furniture and complete living spaces with a refined, comfortable feel.',
-    images: [
-      u('photo-1600210492486-724fe5c67fb0'),
-      u('photo-1600566753086-00f18fb6b3ea'),
-      u('photo-1600607687939-ce8a6c25118c'),
-      u('photo-1600566753051-f0b89df2dd90'),
-      u('photo-1600210491892-03d54c0aaf87'),
-      u('photo-1618220179428-22790b461013'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1616486338812-3dadae4b4ace'),
-    ],
+    tag: 'livingroom',
   },
   bedrooms: {
     title: 'Bedrooms',
     intro: 'Beds, wardrobes, bedside furniture and calm interiors made for everyday comfort.',
-    images: [
-      u('photo-1616486338812-3dadae4b4ace'),
-      u('photo-1611892440504-42a792e24d32'),
-      u('photo-1618773928121-c32242e63f39'),
-      u('photo-1582719478250-c89cae4dc85b'),
-      u('photo-1566665797739-1674de7a421a'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1600210492486-724fe5c67fb0'),
-      u('photo-1618220179428-22790b461013'),
-    ],
+    tag: 'bedroom',
   },
   wardrobes: {
     title: 'Wardrobes',
     intro: 'Built-in wardrobes, dressing rooms and smart storage designed to fit your room perfectly.',
-    images: [
-      u('photo-1558997519-83ea9252edf8'),
-      u('photo-1616486338812-3dadae4b4ace'),
-      u('photo-1618220179428-22790b461013'),
-      u('photo-1615874694520-474822394e73'),
-      u('photo-1600566753190-17f0baa2a6c3'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1616486338812-3dadae4b4ace'),
-      u('photo-1600210492486-724fe5c67fb0'),
-    ],
+    tag: 'wardrobe',
   },
   office: {
     title: 'Office',
     intro: 'Desks, storage and executive furniture for focused, elegant workspaces.',
-    images: [
-      u('photo-1497366811353-6870744d04b2'),
-      u('photo-1497366754035-f200968a6e72'),
-      u('photo-1497366216548-37526070297c'),
-      u('photo-1497366858526-0766cadbe8fa'),
-      u('photo-1497366754035-f200968a6e72'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1600210492486-724fe5c67fb0'),
-      u('photo-1618220179428-22790b461013'),
-    ],
+    tag: 'homeoffice',
   },
   'media-walls': {
     title: 'Media Walls',
     intro: 'Architectural TV units, shelving and feature walls that become the centre of the room.',
-    images: [
-      u('photo-1600566753190-17f0baa2a6c3'),
-      u('photo-1600210492486-724fe5c67fb0'),
-      u('photo-1600607687939-ce8a6c25118c'),
-      u('photo-1618220179428-22790b461013'),
-      u('photo-1600607687920-4e2a09cf159d'),
-      u('photo-1616486338812-3dadae4b4ace'),
-      u('photo-1600566753086-00f18fb6b3ea'),
-      u('photo-1600210491892-03d54c0aaf87'),
-    ],
+    tag: 'mediawall',
   },
 };
 
@@ -102,7 +46,12 @@ export function generateStaticParams() {
 
 export default function CollectionDetail({ params }: { params: { slug: string } }) {
   const item = DATA[params.slug] ?? DATA.kitchens;
-  const photos = Array.from({ length: 100 }, (_, index) => item.images[index % item.images.length]);
+
+  // Each card gets its own lock value. This removes the old 8-image repeat system.
+  // The tag is category-specific, so a Kitchens page requests kitchen photos only, etc.
+  const photos = Array.from({ length: 100 }, (_, index) =>
+    `https://loremflickr.com/1800/1350/${item.tag}?lock=${index + 1}`
+  );
 
   return (
     <main className="min-h-screen bg-ink text-paper">
@@ -138,8 +87,17 @@ export default function CollectionDetail({ params }: { params: { slug: string } 
 
       <section className="grid grid-cols-1 gap-px bg-black/40 px-1 md:grid-cols-2 lg:grid-cols-3">
         {photos.map((src, index) => (
-          <article key={`${src}-${index}`} className="group relative aspect-[4/3] overflow-hidden bg-neutral-950">
-            <img src={`${src}&ixid=elegent-${params.slug}-${index + 1}`} alt={`${item.title} design ${index + 1}`} loading={index < 9 ? 'eager' : 'lazy'} className="h-full w-full object-cover transition duration-1000 ease-out group-hover:scale-105" />
+          <article key={src} className="group relative aspect-[4/3] overflow-hidden bg-neutral-950">
+            <img
+              src={src}
+              alt={`${item.title} design ${index + 1}`}
+              loading={index < 9 ? 'eager' : 'lazy'}
+              className="h-full w-full object-cover transition duration-1000 ease-out group-hover:scale-105"
+              onError={(event) => {
+                const image = event.currentTarget;
+                image.style.display = 'none';
+              }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80" />
             <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-[10px] uppercase tracking-[.18em] text-white/75">
               <span>{String(index + 1).padStart(2, '0')}</span><span>{item.title}</span>
